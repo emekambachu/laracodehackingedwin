@@ -1,12 +1,41 @@
-<!doctype html>
-<html>
-    <head>
-        <meta charset="UTF-8">
-        <title>Users Index page</title>
-    </head>
+@extends('layouts.admin')
 
-    <body>
-        <h1>Usrs Index Page</h1>
-        <p>Paragraph</p>
-    </body>
-</html>
+@section('content')
+
+    <h1>Admin user section</h1>
+
+      <table class="table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Name</th>
+              <th>Email</th>
+                <th>Role</th>
+                <th>Active</th>
+              <th>Created</th>
+              <th>Updated</th>
+            </tr>
+          </thead>
+
+          <tbody>
+
+          @if(!empty($users))
+            @foreach($users as $user)
+            <tr>
+              <td>{{$user->id}}</td>
+              <td>{{$user->name}}</td>
+              <td>{{$user->email}}</td>
+                <td>{{empty($user->role_id) ? 'None' : $user->role->name}}</td>
+                <td>
+                    {{$user->is_active == 1 ? 'Active' : 'Not Active'}}
+                </td>
+              <td>{{$user->created_at->diffForHumans()}}</td>
+              <td>{{$user->updated_at->diffForHumans()}}</td>
+            </tr>
+            @endforeach
+              @endif
+
+          </tbody>
+        </table>
+
+    @endsection
