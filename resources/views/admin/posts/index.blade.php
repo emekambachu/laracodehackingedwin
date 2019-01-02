@@ -26,8 +26,8 @@
             @foreach($posts as $post)
                 <tr>
                     <td>{{$post->id}}</td>
-                    <td>{{empty($post->user_id) ? 'None' : $post->user->name}}</td>
-                    <td>{{empty($post->category_id) ? 'None' : $post->category->name}}</td>
+                    <td>{{$post->user ? $post->user->name : 'None' }}</td>
+                    <td>{{$post->category ? $post->category->name : 'None'}}</td>
                     <td>
                         <img class="img-circle" style="object-fit: cover; object-position: center" width="70" height="70" src="/images/{{$post->Photo ? $post->photo->img : 'noimage.png'}}">
                     </td>

@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Category; //Import Category Class
 use App\Http\Requests\PostRequest; //Import PostRequest
 use App\Photo; //Import Photo Class
-use App\Post; //Import Post Model
+use App\Post; //Import Post Class
 use Illuminate\Http\Request; //Import Request
 use Illuminate\Support\Facades\Auth; //Import Auth
 
@@ -31,7 +32,8 @@ class AdminPostsController extends Controller
     public function create()
     {
         //
-        return view('admin.posts.create');
+        $categories = Category::pluck('name', 'id')->all();
+        return view('admin.posts.create', compact('categories'));
 
     }
 
