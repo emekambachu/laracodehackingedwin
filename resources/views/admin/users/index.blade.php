@@ -2,6 +2,10 @@
 
 @section('content')
 
+    @if(Session::has('deleted_user'))
+        <p align="center" class="bg-danger col-lg-12">{{session('deleted_user')}}</p>
+        @endif
+
     <h1>Admin user section</h1>
 
       <table class="table">
@@ -48,11 +52,17 @@
                     </a>
                 </td>
                 <td>
-                    <a href="">
-                        <button class="btn btn-circle btn-danger">
-                            <i class="fa fa-trash"></i>
-                        </button>
-                    </a>
+                    {!! Form::open(['method'=>'DELETE', 'action'=>['AdminUsersController@destroy', $user->id] ]) !!}
+                    {{csrf_field()}}
+
+                    {{--<button class="btn btn-circle btn-danger">--}}
+                        {{--<i class="fa fa-trash"></i>--}}
+                    {{--</button>--}}
+
+                    {!! Form::submit("Delete", ['class'=>'btn btn-rounded btn-danger']) !!}
+
+                    {!! Form::close() !!}
+
                 </td>
             </tr>
             @endforeach

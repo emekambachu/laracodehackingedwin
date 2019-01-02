@@ -47,10 +47,18 @@
     </div>
 
     <div>
-        {!! Form::submit('Create Post', ['class'=>'btn btn-primary']) !!}
+        {!! Form::submit('Update Post', ['class'=>'btn btn-primary col-sm-6']) !!}
     </div>
-
     {!! Form::close() !!}
+
+
+    {!! Form::open(['method'=>'DELETE', 'action'=>['AdminUsersController@destroy', $user->id] ]) !!}
+        {{csrf_field()}}
+        <div>
+            {!! Form::submit('Delete User', ['class'=>'btn btn-danger col-sm-6']) !!}
+        </div>
+    {!! Form::close() !!}
+
 
     </div>
 

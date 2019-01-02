@@ -6,6 +6,8 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
+use Illuminate\Support\Facades\Hash;
+
 class User extends Authenticatable
 {
     use Notifiable;
@@ -34,5 +36,32 @@ class User extends Authenticatable
 
     public function photo(){
         return $this->belongsTo('App\Photo');
+    }
+
+    public function setPasswordAttribute($password){
+        if(!empty($password)){
+
+            //hash with bcrypt
+            //$this->attributes['password'] = bcrypt($password);
+
+            //$this->attributes['password'] = Hash::make($password);
+
+            $this->attributes['password'] = Hash::needsRehash($password) ? Hash::make($password) : $password;
+        }
+    }
+
+    public function isAdmin(){
+
+        if(!empty($this->role->name)) {
+            if ($this->role->name == "Administrator" && $this->is_active == 1){
+                return true;
+            }
+            return false;
+        }
+
+    }
+
+    public function posts(){
+        return $this->hasMany('App\Post');
     }
 }

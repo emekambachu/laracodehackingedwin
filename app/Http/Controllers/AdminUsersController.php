@@ -11,6 +11,8 @@ use Illuminate\Http\Request;
 use App\Role;
 use App\User;
 use App\Photo;
+use Illuminate\Support\Facades\Hash; //this must b included for hashing password
+use Illuminate\Support\Facades\Session; //this must be included for using flash sessions
 
 
 class AdminUsersController extends Controller
@@ -47,15 +49,13 @@ class AdminUsersController extends Controller
      */
     public function store(UserRequest $request)
     {
+        //get all form fields with array
+        $input = $request->all();
 
-        if(trim($request->password) == ''){
-            $input = $request->except('password');
-        }else{
-            $input = $request->all();
-            $input['password'] = bcrypt($request->password);
-        }
+        //Hash password field
+        $input['password'] = Hash::make($request->password);
 
-
+        //request upload image
         if($file = $request->file('photo_id')){
 
             $name = time() . $file->getClientOriginalName();
@@ -65,10 +65,10 @@ class AdminUsersController extends Controller
             $photo = Photo::create(['img'=>$name]);
 
             $input['photo_id'] = $photo->id;
-
         }
 
 
+        //create user or post
         User::create($input);
 
         return redirect('admin/users');
@@ -112,12 +112,15 @@ class AdminUsersController extends Controller
         //get user ID
         $user = User::findOrFail($id);
 
-        //request for all form fields
+        //if password field is empty, get password from db
         if(trim($request->password) == ''){
-            $input = $request->except('password');
+            //$input = $request->except('password');
+            $input['password'] = $user->password;
         }else{
+            //else request for all fields and Hash password
             $input = $request->all();
-            $input['password'] = bcrypt($request->password);
+            //$input['password'] = bcrypt($request->password);
+            $input['password'] = Hash::make($request->password);
         }
 
         //upload file during update
@@ -146,6 +149,18 @@ class AdminUsersController extends Controller
      */
     public function destroy($id)
     {
-        //
+        //find user
+        $user = User::findOrFail($id);
+
+        //Unlink Image from user
+        unlink(public_path() . '/images/' . $user->photo->img);
+
+        //Delete User
+        $user->delete();
+
+        //flash notification
+        Session::flash('deleted_user', 'The user has been deleted');
+
+        return redirect('/admin/users');
     }
 }
