@@ -6,8 +6,10 @@ use App\Category; //Import Category Class
 use App\Http\Requests\PostRequest; //Import PostRequest
 use App\Photo; //Import Photo Class
 use App\Post; //Import Post Class
+
 use Illuminate\Http\Request; //Import Request
 use Illuminate\Support\Facades\Auth; //Import Auth
+use Illuminate\Support\Facades\Session; //Imported flash session
 
 class AdminPostsController extends Controller
 {
@@ -89,6 +91,10 @@ class AdminPostsController extends Controller
     public function edit($id)
     {
         //
+        $post = Post::findOrfail($id);
+        $categories = Category::pluck('name', 'id')->all();
+        return view('admin.posts.edit', compact('post', 'categories'));
+
     }
 
     /**
@@ -101,6 +107,25 @@ class AdminPostsController extends Controller
     public function update(Request $request, $id)
     {
         //
+        $input = $request->all();
+
+        if($file = $request->file('photo_id')){
+
+            $name = time() . $file->getClientOriginalName();
+
+            $file->move('images', $name);
+
+            $photo = Photo::create(['img'=>$name]);
+
+            $input['photo_id'] = $photo->id;
+
+        }
+
+        //Allows logged in user to edit his own post
+        Auth::user()->posts()->whereId($id)->first()->update($input);
+
+        return redirect('/admin/posts');
+
     }
 
     /**
@@ -111,6 +136,18 @@ class AdminPostsController extends Controller
      */
     public function destroy($id)
     {
-        //
+        //find user
+        $post = Post::findOrFail($id);
+
+        //If there is a photo available, delete it
+        unlink(public_path() . '/images/' . $post->photo->img);
+
+        //Delete User
+        $post->delete();
+
+        //flash notification
+        Session::flash('deleted_post', 'The upost has been deleted');
+
+        return redirect('/admin/posts');
     }
 }

@@ -64,4 +64,17 @@ class User extends Authenticatable
     public function posts(){
         return $this->hasMany('App\Post');
     }
+
+    //Use this to delete a user and all posts related to them
+    // this is a recommended way to declare event handlers
+
+    public static function boot() {
+        parent::boot();
+
+        static::deleting(function($user) { // before delete() method call this
+            $user->posts()->delete();
+            // do the rest of the cleanup...
+        });
+    }
+
 }

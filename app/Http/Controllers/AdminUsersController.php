@@ -152,11 +152,15 @@ class AdminUsersController extends Controller
         //find user
         $user = User::findOrFail($id);
 
-        //Unlink Image from user
-        unlink(public_path() . '/images/' . $user->photo->img);
-
-        //Delete User
-        $user->delete();
+        if($user->Photo){ //if there is a photo for this user, delete the photo first and then delete the user
+            //Unlink Image from user
+            unlink(public_path() . '/images/' . $user->photo->img);
+            //Delete User
+            $user->delete();
+        }else{//Else just delete user
+            //Delete User
+            $user->delete();
+        }
 
         //flash notification
         Session::flash('deleted_user', 'The user has been deleted');

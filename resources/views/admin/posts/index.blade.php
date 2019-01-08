@@ -2,6 +2,10 @@
 
 @section('content')
 
+    @if(Session::has('deleted_post'))
+        <p align="center" class="bg-danger col-lg-12">{{session('deleted_post')}}</p>
+    @endif
+
     <h1>Posts</h1>
 
     <table class="table">
@@ -33,7 +37,7 @@
                     </td>
 
                     <td>{{$post->title}}</td>
-                    <td>{{$post->body}}</td>
+                    <td>{{str_limit($post->body, 10)}}</td>
 
                     {{--<td>--}}
                         {{--<img class="img-circle" style="object-fit: cover; object-position: center" width="70" height="70" src="/images/{{$user->Photo ? $user->photo->img : 'noimage.png'}}">--}}
@@ -50,20 +54,20 @@
                         </a>
                     </td>
 
-                    <td>
-                        {!! Form::open(['method'=>'DELETE', 'action'=>['AdminPostsController@destroy', $post->id] ]) !!}
-                        {{csrf_field()}}
+    <td>
+        {!! Form::open(['method'=>'DELETE', 'action'=>['AdminPostsController@destroy', $post->id] ]) !!}
+        {{csrf_field()}}
 
-                        {{--<button class="btn btn-circle btn-danger">--}}
-                        {{--<i class="fa fa-trash"></i>--}}
-                        {{--</button>--}}
+        {{--<button class="btn btn-circle btn-danger">--}}
+        {{--<i class="fa fa-trash"></i>--}}
+        {{--</button>--}}
 
-                        {!! Form::submit("Delete", ['class'=>'btn btn-rounded btn-danger']) !!}
+        {!! Form::submit("Delete", ['class'=>'btn btn-rounded btn-danger']) !!}
 
-                        {!! Form::close() !!}
-                    </td>
+        {!! Form::close() !!}
+    </td>
 
-                </tr>
+</tr>
             @endforeach
         @endif
 
