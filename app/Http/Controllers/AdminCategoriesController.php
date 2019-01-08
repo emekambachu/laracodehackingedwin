@@ -86,13 +86,10 @@ class AdminCategoriesController extends Controller
         //get category ID
         $category = Category::findOrFail($id);
 
-        //else request for all fields and Hash password
-        $input = $request->all();
-
-        $category->update($input);
+        $category->update($request->all());
 
         //session notification
-        Session::flash('updated_category', $input['name'] . ' has been Updated');
+        Session::flash('updated_category', 'Updated');
 
         return redirect('/admin/categories');
     }
@@ -105,11 +102,8 @@ class AdminCategoriesController extends Controller
      */
     public function destroy($id)
     {
-        //find Category
-        $category = Category::findOrFail($id);
-
-        //Delete Category
-        $category->delete();
+        //find Category and delete
+        Category::findOrFail($id)->delete();
 
         //flash notification
         Session::flash('deleted_category', 'The category has been deleted');
