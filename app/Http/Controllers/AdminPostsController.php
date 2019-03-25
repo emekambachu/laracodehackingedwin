@@ -6,6 +6,7 @@ use App\Category; //Import Category Class
 use App\Http\Requests\PostRequest; //Import PostRequest
 use App\Photo; //Import Photo Class
 use App\Post; //Import Post Class
+use App\Comment; //Import Post Class
 
 use Illuminate\Http\Request; //Import Request
 use Illuminate\Support\Facades\Auth; //Import Auth
@@ -22,7 +23,6 @@ class AdminPostsController extends Controller
     {
         //
         $posts = Post::all();
-
         return view('admin.posts.index', compact('posts'));
     }
 
@@ -80,6 +80,9 @@ class AdminPostsController extends Controller
     public function show($id)
     {
         //
+        $post = Post::findOrFail($id);
+        return view('post', compact('post'));
+
     }
 
     /**
@@ -146,8 +149,15 @@ class AdminPostsController extends Controller
         $post->delete();
 
         //flash notification
-        Session::flash('deleted_post', 'The upost has been deleted');
+        Session::flash('deleted_post', 'The post has been deleted');
 
         return redirect('/admin/posts');
     }
+
+    public function post($id){
+        $post = Post::findOrFail($id);
+        $comments = $post->comment()->whereIsActive(1)->get();
+        return view('post', compact('post', 'comments'));
+    }
+
 }
