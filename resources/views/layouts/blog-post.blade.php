@@ -21,6 +21,8 @@
     <!-- Custom styles for this template -->
     <link href="{{ asset('css/clean-blog.min.css') }}" rel="stylesheet">
 
+    @yield('style')
+
 </head>
 
 <body>
@@ -128,6 +130,8 @@
 
 <!-- Custom scripts for this template -->
 <script src="{{ asset('js/clean-blog.min.js') }}"></script>
+
+@yield('scripts')
 
 </body>
 
